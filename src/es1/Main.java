@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
@@ -35,28 +36,36 @@ public class Main {
         // es1
         System.out.println("--------------------- ES1: Books > 100 ------------------------");
         List<Product> listBooksHigher100 = new ArrayList<>();
-        productList.stream().filter(product -> product.getPrice() > 100 && product.getCategory().equalsIgnoreCase("books")).forEach(
-                book -> listBooksHigher100.add(book)
-        );
+        productList.stream().filter(product -> product.getPrice() > 100 && product.getCategory().equalsIgnoreCase("books"))
+                .forEach(book -> listBooksHigher100.add(book));
 
         System.out.println("books > 100: " + listBooksHigher100);
 
         // es2
         System.out.println("--------------------- ES2: Baby ------------------------");
         List<Product> listCatgoryBaby = productList.stream().filter(product -> product.getCategory().equalsIgnoreCase("baby")).toList();
+//      could use anyMatch(product -> product.getCategory().equals("Baby"))
 
         System.out.println("Category Baby: " + listCatgoryBaby);
 
         // es3
         System.out.println("--------------------- ES3: Boys & price with 10% discount ------------------------");
 
-        List<Product> listBoys = new ArrayList<>();
-        productList.stream()
+        // si poteva usare anche filter and map
+//        List<Product> listBoys = new ArrayList<>();
+//        productList.stream()
+//                .filter(product -> product.getCategory().equalsIgnoreCase("boys"))
+//                .forEach(product -> {
+//                    product.setPrice(product.getPrice() * 0.9);
+//                    listBoys.add(product);
+//                });
+
+        List<Product> listBoys = productList.stream()
                 .filter(product -> product.getCategory().equalsIgnoreCase("boys"))
-                .forEach(product -> {
+                .map(product -> {
                     product.setPrice(product.getPrice() * 0.9);
-                    listBoys.add(product);
-                });
+                    return product;
+                }).toList();
 
         System.out.println("Boys & price with 10% discount: " + listBoys);
 
@@ -106,20 +115,28 @@ public class Main {
         for(int i = 0; i < 20; i++) {
             listOrder.add(order.get());
         }
+
+        // LocalDate startDate = LocalDate.of(2021, 2, 1);
+        // LocalDate endDate = LocalDate.of(2021, 4, 1);
         Predicate<LocalDate> isAfterJan = date -> date.isAfter(LocalDate.parse("2023-01-31"));
         Predicate<LocalDate> isBeforeApril = date -> date.isBefore(LocalDate.parse("2023-04-01"));
         Predicate<LocalDate> isBetween = isBeforeApril.and(isAfterJan);
 
         System.out.println("order list: " + listOrder);
 
-//        List<Product> ListLevel2Clients = new ArrayList<>();
+/*//        List<Product> ListLevel2Clients = new ArrayList<>();
         listOrder.stream().filter(ordered -> ordered.getCustomer().getTier() == 2)
                 .filter(oreded -> isBetween.test(oreded.getOrderDate())
                 ).forEach(oreded -> {
 //                    ListLevel2Clients.add(oreded);
                     System.out.println("ordeded: " + oreded);
                 });
+        */
 
-//        System.out.println("filteded: " + ListLevel2Clients);
+        List<Product> listLevel2Clients = listOrder.stream()
+                .filter(ordered -> isBetween.test(ordered.getOrderDate()))
+                .flatMap(ordered -> ordered.getProducts().stream()).toList();
+
+        System.out.println("filtered: " + listLevel2Clients);
     }
 }
