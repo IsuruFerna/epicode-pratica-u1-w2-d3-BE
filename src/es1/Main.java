@@ -36,7 +36,7 @@ public class Main {
         System.out.println("--------------------- ES1: Books > 100 ------------------------");
         List<Product> listBooksHigher100 = new ArrayList<>();
         productList.stream().filter(product -> product.getPrice() > 100 && product.getCategory().equalsIgnoreCase("books")).forEach(
-                listBooksHigher100::add
+                book -> listBooksHigher100.add(book)
         );
 
         System.out.println("books > 100: " + listBooksHigher100);
@@ -112,7 +112,7 @@ public class Main {
 
         System.out.println("order list: " + listOrder);
 
-        List<Product> ListLevel2Clients = new ArrayList<>();
+//        List<Product> ListLevel2Clients = new ArrayList<>();
         listOrder.stream().filter(ordered -> ordered.getCustomer().getTier() == 2)
                 .filter(oreded -> isBetween.test(oreded.getOrderDate())
                 ).forEach(oreded -> {
@@ -120,6 +120,6 @@ public class Main {
                     System.out.println("ordeded: " + oreded);
                 });
 
-        System.out.println("filteded: " + ListLevel2Clients);
+//        System.out.println("filteded: " + ListLevel2Clients);
     }
 }
