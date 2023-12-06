@@ -9,8 +9,10 @@ public class Customer implements iProduct {
     private String name;
     private int tier;
 
-    public Customer() {
-        long id = generateid();
+    public Customer(String name, int tier) {
+        this.id = generateid();
+        this.name = name;
+        this.tier = tier;
     }
 
     public void setName(String name) {
@@ -19,6 +21,10 @@ public class Customer implements iProduct {
 
     public void setTier(int tier) {
         this.tier = tier;
+    }
+
+    public int getTier() {
+        return tier;
     }
 
     @Override
